@@ -6,7 +6,7 @@ variables:
     validate: "^[a-z][a-z0-9-]*$"
   - name: "package_name"
     prompt: "Package name (e.g., com.example.api)"
-    default: "com.example.{{project_name}}"
+    default: "com.example.project_name"
 dependencies:
   - "io.quarkus:quarkus-resteasy-reactive-jackson"
   - "io.quarkus:quarkus-arc"

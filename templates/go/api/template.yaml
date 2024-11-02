@@ -6,7 +6,7 @@ variables:
     validate: "^[a-z][a-z0-9-]*$"
   - name: "module_path"
     prompt: "Go module path (e.g., github.com/username/project)"
-    default: "github.com/username/{{project_name}}"
+    default: "github.com/username/project_name"
 dependencies:
   - "github.com/gofiber/fiber/v2"
   - "github.com/joho/godotenv"

@@ -1,12 +1,37 @@
 {
   "name": "eden",
   "version": "0.1.0",
-  "description": "A modern project scaffolding tool supporting multiple languages",
+  "description": "🍀 Eden is an extensible project scaffolding CLI used for bootstrapping projects at Zufall Labs.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
     "eden": "./dist/index.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
+  "keywords": [
+    "cli",
+    "scaffolding",
+    "project-generator",
+    "templates",
+    "golang",
+    "java",
+    "quarkus",
+    "fiber",
+    "zufall",
+    "zufall-labs"
+  ],
+  "author": "Zufall Labs",
+  "license": "AGPL-3.0-only",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zufall-labs/eden.git"
+  },
+  "bugs": {
+    "url": "https://github.com/zufall-labs/eden/issues"
+  },
+  "homepage": "https://github.com/zufall-labs/eden#readme",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

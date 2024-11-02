@@ -6,6 +6,7 @@ import { getToolchain } from '../toolchains';
 import { createLogger } from '../utils/logger';
 import { TemplateConfig } from '../types';
 import chalk from 'chalk';
+import fs from 'fs/promises';
 
 const logger = createLogger();
 
@@ -18,6 +19,7 @@ const pkgRoot = path.resolve(__dirname, '..');
 interface InitOptions {
     language?: string;
     type?: string;
+    output?: string;
 }
 
 export async function initCommand(options: InitOptions): Promise<void> {
@@ -29,7 +31,8 @@ export async function initCommand(options: InitOptions): Promise<void> {
         const templates = await templateManager.listAvailableTemplates();
 
         // If language not provided, prompt for it
-        const language = options.language || await promptLanguage(templates);
+        let language = options.language || await promptLanguage(templates);
+        language = language.toLowerCase();
 
         // Get available types for selected language
         const languageTemplates = templates.find(t => t.language === language);
@@ -38,7 +41,8 @@ export async function initCommand(options: InitOptions): Promise<void> {
         }
 
         // If type not provided, prompt for it
-        const type = options.type || await promptType(languageTemplates.types);
+        let type = options.type || await promptType(languageTemplates.types);
+        type = type.toLowerCase();
 
         // Load template config
         logger.info('Loading template configuration...');
@@ -47,13 +51,30 @@ export async function initCommand(options: InitOptions): Promise<void> {
         // Prompt for variables
         const variables = await promptVariables(config);
 
-        // Create project
-        logger.info('Creating project...');
-        const projectPath = path.join(process.cwd(), variables.project_name);
+        ///////////////////////////////////////////////////////////////////////////////
+
+        // Determine project directory
+        const outputPath = options.output ?
+            (options.output === '.' ? process.cwd() : path.resolve(options.output)) :
+            path.join(process.cwd(), variables.project_name);
+
+        // Verify directory
+        const exists = await directoryExists(outputPath);
+        if (exists) {
+            if (outputPath === process.cwd()) {
+                logger.info('Using current directory');
+            } else {
+                throw new Error(`Directory ${outputPath} already exists`);
+            }
+        } else {
+            await fs.mkdir(outputPath, { recursive: true });
+        }
+
+        ///////////////////////////////////////////////////////////////////////////////
 
         // Process template files
         const templatePath = templateManager.getTemplatePath(language, type);
-        await templateManager.processTemplate(templatePath, projectPath, variables);
+        await templateManager.processTemplate(templatePath, outputPath, variables);
 
         // Initialize toolchain
         const toolchain = getToolchain(language);
@@ -70,22 +91,32 @@ export async function initCommand(options: InitOptions): Promise<void> {
 
         // Run toolchain steps
         logger.info('Initializing project...');
-        await toolchain.initialize(projectPath, variables);
+        await toolchain.initialize(outputPath, variables);
 
         logger.info('Installing dependencies...');
-        await toolchain.installDependencies(projectPath);
+        await toolchain.installDependencies(outputPath);
 
         logger.info('Setting up tests...');
-        await toolchain.setupTests(projectPath);
+        await toolchain.setupTests(outputPath);
 
         logger.success('Project created successfully!');
 
         // Print next steps
         logger.info('\nNext steps:');
-        logger.info(chalk.cyan(`  cd ${variables.project_name}`));
+
+        const stylizedOutputPath: string | undefined = outputPath
+            .split('/')
+            .pop();
+
+        if (options.output !== '.') {
+            logger.info(chalk.cyan(`  cd ${stylizedOutputPath}`));
+        }
+
         if (language === 'go') {
             logger.info(chalk.cyan('  go mod tidy'));
             logger.info(chalk.cyan('  go run main.go'));
+        } else if (language === 'java') {
+            logger.info(chalk.cyan('  gradle quarkusDev'));
         }
     } catch (error) {
         logger.error('Failed to initialize project:', error);
@@ -97,8 +128,8 @@ async function promptLanguage(templates: Array<{ language: string; types: string
     return select({
         message: 'Select a language:',
         choices: templates.map(t => ({
-            value: t.language,
-            label: t.language
+            value: capitalize(t.language),
+            label: capitalize(t.language)
         }))
     });
 }
@@ -107,8 +138,8 @@ async function promptType(types: string[]): Promise<string> {
     return select({
         message: 'Select a project type:',
         choices: types.map(type => ({
-            value: type,
-            label: type
+            value: capitalize(type),
+            label: capitalize(type)
         }))
     });
 }
@@ -135,4 +166,17 @@ async function promptVariables(config: TemplateConfig): Promise<Record<string, s
     }
 
     return variables;
+}
+
+async function directoryExists(dir: string): Promise<boolean> {
+    try {
+        const stats = await fs.stat(dir);
+        return stats.isDirectory();
+    } catch {
+        return false;
+    }
+}
+
+function capitalize(value: string): string {
+    return String(value).charAt(0).toUpperCase() + String(value).slice(1);
 }

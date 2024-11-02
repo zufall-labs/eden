@@ -10,13 +10,13 @@ const program = new Command()
     .version('0.1.0');
 
 program
-    .command('init')
-    .description('Initialize a new project')
+    .command('init [output]')
+    .description('Initialize a new project in the specified directory or current directory with "."')
     .option('-l, --language <language>', 'Target language')
     .option('-t, --type <type>', 'Project type')
-    .action(async (options) => {
+    .action(async (output, options) => {
         try {
-            await initCommand(options);
+            await initCommand({ ...options, output });
         } catch (error) {
             logger.error('Failed to initialize project:', error);
             process.exit(1);
