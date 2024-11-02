@@ -1,6 +1,6 @@
 {
   "name": "eden",
-  "version": "0.1.0-alpha.1",
+  "version": "0.3.0-alpha.1",
   "description": "🍀 Eden is an extensible project scaffolding CLI used for bootstrapping projects at Zufall Labs.",
   "type": "module",
   "main": "dist/index.js",
