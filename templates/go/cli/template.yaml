@@ -1,0 +1,15 @@
+name: "Go CLI Application"
+description: "A command-line application using cobra"
+variables:
+  - name: "project_name"
+    prompt: "Project name"
+    validate: "^[a-z][a-z0-9-]*$"
+  - name: "module_path"
+    prompt: "Go module path (e.g., github.com/username/project)"
+    default: "github.com/username/{{project_name}}"
+dependencies:
+  - "github.com/spf13/cobra"
+  - "github.com/spf13/viper"
+hooks:
+  post_create:
+    - "go mod tidy"

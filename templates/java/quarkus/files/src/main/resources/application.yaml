@@ -1,0 +1,38 @@
+quarkus:
+  http:
+    port: 8080
+    cors: true
+
+  log:
+    category:
+      "{{package_name}}":
+        level: INFO
+
+  banner:
+    enabled: true
+
+# Development mode configuration
+dev:
+  quarkus:
+    http:
+      port: 8080
+    log:
+      category:
+        "{{package_name}}":
+          level: DEBUG
+
+# Test mode configuration
+test:
+  quarkus:
+    http:
+      port: 8081
+
+# Production mode configuration
+prod:
+  quarkus:
+    http:
+      port: ${PORT:8080}
+    log:
+      category:
+        "{{package_name}}":
+          level: WARN

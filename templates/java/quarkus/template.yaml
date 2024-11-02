@@ -1,0 +1,15 @@
+name: "Quarkus REST API (Gradle)"
+description: "Supersonic Subatomic Java with Gradle and minimal REST API setup"
+variables:
+  - name: "project_name"
+    prompt: "Project name"
+    validate: "^[a-z][a-z0-9-]*$"
+  - name: "package_name"
+    prompt: "Package name (e.g., com.example.api)"
+    default: "com.example.{{project_name}}"
+dependencies:
+  - "io.quarkus:quarkus-resteasy-reactive-jackson"
+  - "io.quarkus:quarkus-arc"
+hooks:
+  post_create:
+    - "./gradlew build"
