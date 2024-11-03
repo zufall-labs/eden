@@ -117,6 +117,8 @@ export async function initCommand(options: InitOptions): Promise<void> {
             logger.info(chalk.cyan('  go run main.go'));
         } else if (language === 'java') {
             logger.info(chalk.cyan('  gradle quarkusDev'));
+        } else if (language === 'gleam') {
+            logger.info(chalk.cyan('  gleam run'));
         }
     } catch (error) {
         logger.error('Failed to initialize project:', error);
