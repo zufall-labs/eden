@@ -50,12 +50,15 @@ eden --help
 
 ## Available Templates
 
+### Gleam
+- `Wisp`: REST API using Wisp framework
+
 ### Go
-- `fiber-api`: REST API using Fiber framework
-- `cli`: Command-line application using Cobra
+- `Fiber`: REST API using Fiber framework
+- `Cobra`: Command-line application using Cobra
 
 ### Java
-- `quarkus-api`: REST API using Quarkus framework
+- `Quarkus`: REST API using Quarkus framework
 
 ## Contributing
 
