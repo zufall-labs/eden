@@ -1,0 +1,17 @@
+name: "Gleam REST API"
+description: "Simple REST API using Mist and Wisp"
+variables:
+  - name: "project_name"
+    prompt: "Project name"
+    validate: "^[a-z][a-z0-9_]*$"
+  - name: "description"
+    prompt: "Project description"
+    default: "A Gleam REST API"
+dependencies:
+  - "gleam_http"
+  - "mist"
+  - "wisp"
+  - "gleam_json"
+hooks:
+  post_create:
+    - "rebar3 compile"
