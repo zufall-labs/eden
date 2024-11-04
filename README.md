@@ -317,5 +317,6 @@ eden init test-project -l your-language -t your-template
 
 - Node.js >= 18
 - Language-specific requirements:
+  - Gleam: Gleam 1.1.0 or later
   - Go: Go 1.21 or later
   - Java: Java 17 or later and Gradle 8.5 or later
